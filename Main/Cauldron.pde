@@ -1,10 +1,10 @@
-class InventorySystem
+class Cauldron
 {
   PVector position;
   PImage sprite;
   int itemsHeld;
   float itemPosMultiplier;
-  InventorySystem(PVector pPos, String spriteName)
+  Cauldron(PVector pPos, String spriteName)
   {
     position = pPos;
     sprite = loadImage(spriteName + ".png");
@@ -14,15 +14,11 @@ class InventorySystem
     imageMode(CORNER);
     image(sprite, position.x, position.y);
   }
-  void addItem(PVector pPos, Item item, int itemIndex)
+  void addItem(PVector pPos, Item item)
   {    
-    if (itemsHeld != 1)
-    {
-      itemPosMultiplier += 5;
-    }    
-    inventoryItems[itemIndex] = item;
+    cauldronItems.add(item);
     item.position = pPos;
-    item.position.x = pPos.x + itemIndex * 100 + itemPosMultiplier;
+    item.position.x = pPos.x + itemsHeld * 100 + itemPosMultiplier;
     itemsHeld++;    
   }
 }

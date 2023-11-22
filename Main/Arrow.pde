@@ -11,6 +11,7 @@ class Arrow
   }
   void update()
   {
+    imageMode(CORNER);
     image(sprite, position.x, position.y);
   }
   void onClick(String sceneName)

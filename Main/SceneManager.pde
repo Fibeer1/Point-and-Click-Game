@@ -6,11 +6,12 @@ class SceneManager
   {
     currentScene = sceneName;
     background = loadImage(sceneName + ".png");
-    spawnArrows();
+    spawnInteractables();
   }
   void update()
   {
     background(0);
+    imageMode(CORNER);
     image(background, 0, 0);
   }  
 }
