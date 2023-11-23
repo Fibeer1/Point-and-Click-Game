@@ -1,12 +1,13 @@
-class InventorySystem
+class PotionMakerPanel
 {
   PVector position;
   PImage sprite;
+  String type; //Can be Background, Ingredient, Result, Cross
   boolean isOccupied = false;
-  
-  InventorySystem(PVector pPos, String spriteName)
+  PotionMakerPanel(PVector pPos, String spriteName, String pType)
   {
     position = pPos;
+    type = pType;
     sprite = loadImage(spriteName + ".png");
   }
   void update()
@@ -14,12 +15,9 @@ class InventorySystem
     imageMode(CORNER);
     image(sprite, position.x, position.y);
   }
-  void addItem(PVector pPos, Item item, int itemIndex)
+  void addItem(PVector pPos, Item item)
   {    
-    isOccupied = true;
-    itemsHeld++;
-    inventoryItems[itemIndex] = item;
+    cauldronItems.add(item);
     item.position = pPos;
   }
-  
 }

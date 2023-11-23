@@ -25,12 +25,12 @@ class Text
     fill(255);
     textAlign(LEFT);
     textSize(textSize);
-    text(text, position.x + 10, position.y + textSize);
+    text(text, position.x + 10, position.y + textSize + 5);
     }    
   }
   void calculateTextArea() {
     textWidth = textWidth(text);
-    textHeight = 50;   
+    textHeight = textSize + 25;   
     rectWidth = textWidth + textSize * 3.6f;
   }
 }

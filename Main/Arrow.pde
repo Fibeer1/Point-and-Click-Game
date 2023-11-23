@@ -14,12 +14,8 @@ class Arrow
     imageMode(CORNER);
     image(sprite, position.x, position.y);
   }
-  void onClick(String sceneName)
+  void handleInteractions()
   {
-     if (mousePressed && !hasBeenClicked)
-     {
-       hasBeenClicked = true;       
-       sceneManager.ChangeScene(sceneName + ".png");
-     }
+    
   }
 }
