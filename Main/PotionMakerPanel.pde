@@ -4,6 +4,7 @@ class PotionMakerPanel
   PImage sprite;
   String type; //Can be Background, Ingredient, Result, Cross
   boolean isOccupied = false;
+  int currentIndex;
   PotionMakerPanel(PVector pPos, String spriteName, String pType)
   {
     position = pPos;
@@ -17,7 +18,17 @@ class PotionMakerPanel
   }
   void addItem(PVector pPos, Item item)
   {    
-    cauldronItems.add(item);
+    isOccupied = true;
+    currentIndex = cauldron.itemsHeld;
+    cauldron.itemsHeld++;
+    cauldronItems[currentIndex] = item;
     item.position = pPos;
+  }
+  void removeItem()
+  {
+    isOccupied = false;
+    currentIndex = itemsHeld--;
+    cauldronItems[currentIndex] = null;
+    itemsHeld--;
   }
 }

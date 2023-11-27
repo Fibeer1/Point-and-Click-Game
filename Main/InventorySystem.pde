@@ -3,7 +3,7 @@ class InventorySystem
   PVector position;
   PImage sprite;
   boolean isOccupied = false;
-  
+  int currentIndex;
   InventorySystem(PVector pPos, String spriteName)
   {
     position = pPos;
@@ -18,8 +18,14 @@ class InventorySystem
   {    
     isOccupied = true;
     itemsHeld++;
-    inventoryItems[itemIndex] = item;
+    currentIndex = itemIndex;
+    inventoryItems[currentIndex] = item;
     item.position = pPos;
   }
-  
+  void removeItem()
+  {
+    isOccupied = false;
+    itemsHeld--;
+    inventoryItems[currentIndex] = null;
+  }
 }

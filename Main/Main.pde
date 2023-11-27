@@ -2,24 +2,30 @@
 ArrayList<Arrow> arrows = new ArrayList<Arrow>();
 ArrayList<Text> textBoxes = new ArrayList<Text>();
 ArrayList<Item> basementItems = new ArrayList<Item>();
-ArrayList<Item> cauldronItems = new ArrayList<Item>();
 ArrayList<PotionMakerPanel> potionMakerPanels = new ArrayList<PotionMakerPanel>();
-Item[] inventoryItems = new Item[7];
-InventorySystem[] inventoryPanels = new InventorySystem[7]; //The item count and the panel count should be equal
+Item[] cauldronItems = new Item[2];
+Item[] inventoryItems = new Item[4];
+InventorySystem[] inventoryPanels = new InventorySystem[4]; //The item count and the panel count should be equal
 
 SceneManager sceneManager;
 PotionMakerPanel potionMakerBackground;
 Cauldron cauldron;
+Cursor cursor;
 
 int itemsHeld = 0;
 
 boolean hasBeenClicked = false;
+boolean hasChangedScene = false;
+boolean hasClickedTextBox = false;
+boolean isHoldingItem = false;
 boolean potionMakerUIActive = false;
 
 void setup()
 {
   size(1280, 720);
   frameRate(60);
+  noCursor();
+  cursor = new Cursor(new PVector(mouseX, mouseY), "Cursor");
   sceneManager = new SceneManager();
   sceneManager.ChangeScene("Main Menu");
   spawnPotionMakerUI();
@@ -37,6 +43,30 @@ void drawInteractables()
     if (inventoryPanels[i] != null)
     {
       inventoryPanels[i].update();
+    }
+  }
+  if (sceneManager.currentScene == "Cauldron Room")
+  {
+    cauldron.update();
+    if (potionMakerUIActive)
+    {
+      if (potionMakerBackground != null)
+      {
+        potionMakerBackground.update();
+      }
+      for (int i = potionMakerPanels.size() - 1; i >= 0; i--)
+      {
+        potionMakerPanels.get(i).update();
+      }
+      for (int i = 0; i < cauldronItems.length; i++)
+      {
+        Item item = cauldronItems[i];
+        if (item != null)
+        {
+          print(1);
+          item.update();
+        }
+      }
     }
   }
   for (int i = arrows.size() - 1; i >= 0; i--)
@@ -58,25 +88,11 @@ void drawInteractables()
       inventoryItems[i].update();
     }
   }
-  if (sceneManager.currentScene == "Cauldron Room")
+  if (basementItems.size() > 0 && basementItems.get(0) != null)
   {
-    cauldron.update();
-    if (potionMakerUIActive)
-    {
-      if (potionMakerBackground != null)
-      {
-        potionMakerBackground.update();
-      }
-      for (int i = potionMakerPanels.size() - 1; i >= 0; i--)
-      {
-        potionMakerPanels.get(i).update();
-      }
-      for (int i = cauldronItems.size() - 1; i >= 0; i--)
-    {
-      cauldronItems.get(i).update();
-    }
-    }   
+    text(basementItems.get(0) + "", 50, 50);
   }
+  cursor.update();
 }
 void spawnInteractables()
 {
@@ -91,7 +107,7 @@ void spawnInteractables()
     textBoxes.add(new Text(new PVector(200, 350), 30, "Quit Game", true));
   } else if (sceneManager.currentScene == "Store")
   {
-    arrows.add(new Arrow(new PVector(10, height / 2), "arrowLeft", "Basement"));
+    arrows.add(new Arrow(new PVector(-20, height / 2), "arrowLeft", "Basement"));
     arrows.add(new Arrow(new PVector(width - 80, height / 2), "arrowRight", "Cauldron Room"));
   } else if (sceneManager.currentScene == "Basement")
   {
@@ -103,7 +119,7 @@ void spawnInteractables()
     basementItems.add(new Item(new PVector(950, 50), "Fairy Wings", "Ingredient"));
   } else if (sceneManager.currentScene == "Cauldron Room")
   {
-    arrows.add(new Arrow(new PVector(10, height / 2), "arrowLeft", "Store"));
+    arrows.add(new Arrow(new PVector(-20, height / 2), "arrowLeft", "Store"));
     arrows.add(new Arrow(new PVector(width - 80, height / 2), "arrowRight", "Basement"));
     cauldron = new Cauldron(new PVector(width / 2 - 150, height / 2), "Cauldron");
   }
@@ -113,85 +129,88 @@ void mousePressed()
   if (!hasBeenClicked && mouseButton == LEFT)
   {
     hasBeenClicked = true;
-    handleArrowInteraction();
-    handleTextboxInteraction();
-    handleBasementItems();
     handlePotionMaker();
   }
 }
 void mouseReleased()
 {
   hasBeenClicked = false;
-}
-void handleArrowInteraction()
-{
-  for (int i = arrows.size() - 1; i >= 0; i--)
+  hasChangedScene = false;
+  hasClickedTextBox = false;
+  isHoldingItem = false;
+  handleBasementItemsDragNDrop();
+  handlePotionMakerDragNDrop();
+  for (int i = 0; i < inventoryItems.length; i++)
   {
-    Arrow arrow = arrows.get(i);
-    boolean withinBox =
-      mouseX > arrow.position.x &&
-      mouseX < arrow.position.x + arrow.sprite.width &&
-      mouseY > arrow.position.y &&
-      mouseY < arrow.position.y + arrow.sprite.height;
-    if (withinBox)
+    Item item = inventoryItems[i];
+    if (item != null)
     {
-      sceneManager.ChangeScene(arrow.sceneToGo);
-      break;
+      item.isBeingHeld = false;
     }
   }
 }
-void handleTextboxInteraction()
+void handleBasementItemsDragNDrop()
 {
-  for (int i = textBoxes.size() - 1; i >= 0; i--)
+  if (sceneManager.currentScene == "Basement")
   {
-    Text textBox = textBoxes.get(i);
-    boolean withinBox =
-      mouseX > textBox.position.x &&
-      mouseX < textBox.position.x + textBox.rectWidth &&
-      mouseY > textBox.position.y &&
-      mouseY < textBox.position.y + textBox.textHeight;
-    if (withinBox)
+    for (int i = basementItems.size() - 1; i >= 0; i--)
     {
-      if (textBox.isButton)
+      Item item = basementItems.get(i);
+      if (item.isBeingHeld && itemsHeld < inventoryPanels.length)
       {
-        if (textBox.text == "Start Game")
+        for (int j = 0; j < inventoryPanels.length; j++)
         {
-          sceneManager.ChangeScene("Store");
-          for (int j = 0; j < inventoryPanels.length; j++)
+          InventorySystem panel = inventoryPanels[j];
+          boolean withinBox =
+            mouseX > panel.position.x &&
+            mouseX < panel.position.x + panel.sprite.width &&
+            mouseY > panel.position.y &&
+            mouseY < panel.position.y + panel.sprite.height;
+          if (!inventoryPanels[j].isOccupied && withinBox)
           {
-            inventoryPanels[j] = new InventorySystem(new PVector(width / 2 - 350 + j * 100, height - 100), "Panel");
+            panel.addItem(new PVector(panel.position.x, panel.position.y), item, j);
+            item.currentInventoryPanel = panel;
+            break;
+          } else
+          {
+            item.position = item.startingPosition;
           }
-        } else if (textBox.text == "Quit Game")
-        {
-          exit();
-        } else
-        {
-          textBox.displayText = false;
         }
       }
-      break;
+      item.isBeingHeld = false;
     }
   }
 }
-void handleBasementItems()
+void handlePotionMakerDragNDrop()
 {
-  for (int i = basementItems.size() - 1; i >= 0; i--)
+  if (sceneManager.currentScene == "Cauldron Room")
   {
-    Item item = basementItems.get(i);
-    boolean withinBox =
-      mouseX > item.position.x &&
-      mouseX < item.position.x + item.sprite.width &&
-      mouseY > item.position.y &&
-      mouseY < item.position.y + item.sprite.height;
-    if (itemsHeld < inventoryPanels.length && withinBox)
+    for (int i = 0; i < inventoryItems.length; i++)
     {
-      for (int j = 0; j < inventoryPanels.length; j++)
+      Item item = inventoryItems[i];
+      if (item != null)
       {
-        if (!inventoryPanels[j].isOccupied)
+        if (potionMakerUIActive)
         {
-          inventoryPanels[j].addItem(new PVector(inventoryPanels[j].position.x, inventoryPanels[j].position.y), item, j);
-          break;
+          print(1);
+          for (int j = 0; j < potionMakerPanels.size(); j++)
+          {
+            PotionMakerPanel panel = potionMakerPanels.get(j);
+            boolean withinBox =
+              mouseX > panel.position.x &&
+              mouseX < panel.position.x + panel.sprite.width &&
+              mouseY > panel.position.y &&
+              mouseY < panel.position.y + panel.sprite.height;
+            if (item.isBeingHeld && withinBox && cauldron.itemsHeld < 2 && !panel.isOccupied && panel.type == "Ingredient" && item.type == "Ingredient")
+            {
+              panel.addItem(new PVector(panel.position.x, panel.position.y), item);
+              item.currentPotionPanel = panel;
+              inventoryItems[i] = null;
+              break;
+            }
+          }
         }
+        item.isBeingHeld = false;
       }
     }
   }
@@ -213,35 +232,6 @@ void handlePotionMaker()
       }
     } else
     {
-      for (int i = 0; i < inventoryItems.length; i++)
-      {
-        if (inventoryItems[i] != null)
-        {
-          Item item = inventoryItems[i];
-          boolean withinItemBox =
-            mouseX > item.position.x &&
-            mouseX < item.position.x + item.sprite.width &&
-            mouseY > item.position.y &&
-            mouseY < item.position.y + item.sprite.height;
-          if (withinItemBox && cauldron.itemsHeld < 2)
-          {
-            for (int j = 0; j <= potionMakerPanels.size() - 1; j++)
-            {
-              PotionMakerPanel panel = potionMakerPanels.get(j);
-              if (panel.type == "Ingredient" && !panel.isOccupied)
-              {               
-                panel.addItem(new PVector(panel.position.x, panel.position.y), item);
-                panel.isOccupied = true;
-                inventoryItems[i] = null;
-                inventoryPanels[i].isOccupied = false;
-                itemsHeld--;
-                break;
-              }
-            }            
-            break;
-          }
-        }
-      }
       for (int i = potionMakerPanels.size() - 1; i >= 0; i--)
       {
         if (potionMakerPanels.get(i).type == "Cross")
