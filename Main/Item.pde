@@ -6,11 +6,12 @@ class Item
   //For potions it can be Death, Cure, Explosive, Love, Poison, Invisibility, Resurrection
   String type; //Can be Ingredient/Potion
   PImage sprite;
+  int inventorySystemIndex;
+  ItemPanel currentPanel;
   boolean isBeingHeld = false;
-  InventorySystem currentInventoryPanel;
-  PotionMakerPanel currentPotionPanel;
   Item(PVector pPos, String pName, String pType)
   {
+    currentPanel = null;
     position = pPos;
     startingPosition = pPos;
     name = pName;
@@ -36,7 +37,7 @@ class Item
   }
   void handleDragNDrop()
   {
-    if (hasBeenClicked && !isHoldingItem)
+    if (hasBeenClicked && !isHoldingItem && currentlyHeldItem == null)
     {
       boolean withinBox =
         mouseX > position.x &&
@@ -44,17 +45,10 @@ class Item
         mouseY > position.y &&
         mouseY < position.y + sprite.height;
       if (withinBox)
-      {
-        if (currentInventoryPanel != null)
-        {
-          currentInventoryPanel.removeItem();
-        }
-        if (currentPotionPanel != null)
-        {
-          currentPotionPanel.removeItem();
-        }
+      {                
         isHoldingItem = true;
         isBeingHeld = true;
+        currentlyHeldItem = this;
       }
     }
   }

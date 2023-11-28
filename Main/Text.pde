@@ -46,9 +46,21 @@ class Text
           if (text == "Start Game")
           {
             sceneManager.ChangeScene("Store");
+            inventoryUIActive = true;
             for (int j = 0; j < inventoryPanels.length; j++)
             {
-              inventoryPanels[j] = new InventorySystem(new PVector(width / 2 - 200 + j * 100, height - 100), "Panel");
+              if (j == 0)
+              {
+                inventoryPanels[j] = new ItemPanel(new PVector(width / 2 - 207 + j * 100, height - 100), "PanelRight", "Ingredient", j);
+              }
+              else if (j == inventoryPanels.length - 1)
+              {
+                inventoryPanels[j] = new ItemPanel(new PVector(width / 2 - 200 + j * 100, height - 100), "PanelLeft", "Ingredient", j);
+              }
+              else
+              {
+                inventoryPanels[j] = new ItemPanel(new PVector(width / 2 - 200 + j * 100, height - 100), "Panel", "Ingredient", j);
+              }              
             }
           } else if (text == "Quit Game")
           {
