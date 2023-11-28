@@ -33,6 +33,10 @@ class Item
       position.x = mouseX - sprite.width / 2;
       position.y = mouseY - sprite.height / 2;
     }
+    else
+    {
+      isBeingHeld = false;
+    }
     handleDragNDrop();
   }
   void handleDragNDrop()

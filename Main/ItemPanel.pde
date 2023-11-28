@@ -5,7 +5,7 @@ class ItemPanel
   boolean isOccupied;
   int currentIndex;
   Item currentItem;
-  String type; //Can be Ingredient or Potion
+  String type; //Can be Ingredient, Potion or Result
   ItemPanel(PVector pPos, String spriteName, String pType, int pIndex)
   {
     isOccupied = false;
@@ -46,6 +46,7 @@ class ItemPanel
   }
   void placeItem(PVector pPos, Item item)
   {
+    item.isBeingHeld = false;
     if (isOccupied)
     {
       if (item.currentPanel != null)

@@ -10,7 +10,10 @@ class Cauldron
   }
   void update()
   {
-    imageMode(CORNER);
-    image(sprite, position.x, position.y);
+    if (sceneManager.currentScene == "Cauldron Room")
+    {
+      imageMode(CORNER);
+      image(sprite, position.x, position.y);
+    }
   }
 }

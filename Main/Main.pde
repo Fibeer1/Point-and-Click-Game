@@ -38,6 +38,7 @@ void setup()
   noCursor();
   potionMakerBackgroundX = width / 2 - 200;
   potionMakerBackgroundY = height / 2 - 150;
+  cauldron = new Cauldron(new PVector(width / 2 - 150, height / 2), "Cauldron");
   inventoryBackground = loadImage("InventoryBackground.png");
   cursor = new Cursor(new PVector(mouseX, mouseY), "Cursor");
   sceneManager = new SceneManager();
@@ -85,7 +86,7 @@ void drawInteractables()
         }       
       }
       brewButton.update();
-      crossButton.update();      
+      crossButton.update();
       for (int i = 0; i < cauldronItems.length; i++)
       {
         Item item = cauldronItems[i];
@@ -151,8 +152,7 @@ void spawnInteractables()
   } else if (sceneManager.currentScene == "Cauldron Room")
   {
     arrows.add(new Arrow(new PVector(-20, height / 2), "arrowLeft", "Store"));
-    arrows.add(new Arrow(new PVector(width - 80, height / 2), "arrowRight", "Basement"));
-    cauldron = new Cauldron(new PVector(width / 2 - 150, height / 2), "Cauldron");
+    arrows.add(new Arrow(new PVector(width - 80, height / 2), "arrowRight", "Basement")); 
   }
 }
 void mousePressed()
@@ -180,7 +180,7 @@ void handleItemPanelsDragNDrop()
   {
     if (potionMakerPanels[i] != null)
     {
-      potionMakerPanels[i].handleItemDrop(currentlyHeldItem);      
+      potionMakerPanels[i].handleItemDrop(currentlyHeldItem);
     }  
   }
   for (int i = 0; i < inventoryPanels.length; i++)
