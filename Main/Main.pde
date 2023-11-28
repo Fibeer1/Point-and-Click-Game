@@ -7,6 +7,7 @@ Item[] cauldronItems = new Item[3];
 Item[] inventoryItems = new Item[4];
 ItemPanel[] inventoryPanels = new ItemPanel[4]; //The item count and the panel count should be equal
 
+BookManager bookManager = new BookManager();
 SceneManager sceneManager;
 PotionMakerButton brewButton;
 PotionMakerButton crossButton;
@@ -28,6 +29,7 @@ boolean hasClickedTextBox = false;
 boolean isHoldingItem = false;
 boolean potionMakerUIActive = false;
 boolean inventoryUIActive = false;
+boolean isBookOpen = false;
 
 void setup()
 {
@@ -41,6 +43,7 @@ void setup()
   sceneManager = new SceneManager();
   sceneManager.ChangeScene("Main Menu");
   spawnPotionMakerUI();
+  bookManager.SetupBook();
 }
 void draw()
 {
@@ -98,7 +101,7 @@ void drawInteractables()
   if (cauldron != null)
   {
     text(cauldron.itemsHeld, width - 110, 500);
-  }  
+  }    
   for (int i = arrows.size() - 1; i >= 0; i--)
   {
     arrows.get(i).update();
@@ -119,6 +122,7 @@ void drawInteractables()
       text(inventoryItems[i].name, 60, 60 + i * 100);
     }
   }
+  bookManager.update();
   cursor.update();
 }
 void spawnInteractables()
@@ -156,6 +160,7 @@ void mousePressed()
   if (!hasBeenClicked && mouseButton == LEFT)
   {
     hasBeenClicked = true;
+    bookManager.handleBook();
     handlePotionMaker();
   }
 }

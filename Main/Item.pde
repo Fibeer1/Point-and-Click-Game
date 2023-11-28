@@ -37,7 +37,7 @@ class Item
   }
   void handleDragNDrop()
   {
-    if (hasBeenClicked && !isHoldingItem && currentlyHeldItem == null)
+    if (hasBeenClicked && !isHoldingItem && currentlyHeldItem == null && !isBookOpen)
     {
       boolean withinBox =
         mouseX > position.x &&

@@ -20,7 +20,7 @@ class PotionMakerButton
   }
   void handleInput()
   {
-    if (hasBeenClicked && !isHoldingItem)
+    if (hasBeenClicked && !isHoldingItem && !isBookOpen)
     {
       boolean withinBox =
         mouseX > position.x &&

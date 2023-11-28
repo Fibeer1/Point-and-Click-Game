@@ -20,7 +20,7 @@ class Arrow
   }
   void handleMouseClick()
   {
-    if (!hasChangedScene && hasBeenClicked && !isHoldingItem)
+    if (!hasChangedScene && hasBeenClicked && !isHoldingItem && !isBookOpen)
     {     
       boolean withinBox =
         mouseX > position.x &&
