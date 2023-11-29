@@ -51,7 +51,7 @@ void setup()
   cauldronAmbience = new SoundFile(this, "cauldronAmbience.wav");
   gardenAmbience = new SoundFile(this, "gardenAmbience.wav");
   music = new SoundFile(this, "music.wav");
-  //music.loop(); //commented because I listen to music while working, don't forget to turn on when testing
+  music.loop(); //usually commented because I listen to music while working, don't forget to turn on when testing
 }
 void draw()
 {
