@@ -17,6 +17,7 @@ PotionMakerButton brewButton;
 PotionMakerButton crossButton;
 Item currentlyHeldItem;
 Cauldron cauldron;
+TrashCan trashCan;
 Cursor cursor;
 
 int itemsHeld = 0;
@@ -43,6 +44,7 @@ void setup()
   potionMakerBackgroundX = width / 2 - 200;
   potionMakerBackgroundY = height / 2 - 150;
   cauldron = new Cauldron(new PVector(width / 2 - 150, height / 2), "Cauldron");
+  trashCan = new TrashCan(new PVector(width - 200, height - 200), "TrashCan");
   inventoryBackground = loadImage("InventoryBackground.png");
   cursor = new Cursor(new PVector(mouseX, mouseY), "Cursor");
   sceneManager = new SceneManager();
@@ -51,7 +53,7 @@ void setup()
   cauldronAmbience = new SoundFile(this, "cauldronAmbience.wav");
   gardenAmbience = new SoundFile(this, "gardenAmbience.wav");
   music = new SoundFile(this, "music.wav");
-  music.loop(); //usually commented because I listen to music while working, don't forget to turn on when testing
+  //music.loop(); //usually commented because I listen to music while working, don't forget to turn on when testing
 }
 void draw()
 {
@@ -75,6 +77,7 @@ void drawInteractables()
   if (sceneManager.currentScene == "Cauldron Room")
   {
     cauldron.update();
+    trashCan.update();
     if (potionMakerUIActive)
     {
       if (potionMakerBackground != null)
@@ -187,9 +190,13 @@ void mouseReleased()
   hasChangedScene = false;
   hasClickedTextBox = false;
   isHoldingItem = false;
+  if (sceneManager.currentScene == "Cauldron Room")
+  {
+    trashCan.handleItemDrop(currentlyHeldItem);
+  }  
   handleInventorySystemDragNDrop();
   handleBasementItemsDragNDrop();
-  handleItemPanelsDragNDrop();
+  handleItemPanelsDragNDrop(); 
 }
 void handleItemPanelsDragNDrop()
 {
