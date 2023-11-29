@@ -30,7 +30,7 @@ class ItemPanel
         mouseY < position.y + sprite.height;
       if (withinBox)
       {
-        placeItem(new PVector(position.x, position.y), item);
+        placeItem(new PVector(position.x + 10, position.y + 10), item);
       }
     }
   }

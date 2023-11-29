@@ -16,13 +16,8 @@ class Item
     startingPosition = pPos;
     name = pName;
     type = pType;
-    if (type == "Ingredient")
-    {
-      sprite = loadImage(pName + ".png");
-    } else
-    {
-      sprite = loadImage(pName + "Potion" + ".png");
-    }
+    sprite = loadImage(pName + ".png");
+    sprite.resize(80, 80);
   }
   void update()
   {

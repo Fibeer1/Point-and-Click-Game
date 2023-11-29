@@ -1,6 +1,6 @@
 class SceneManager
 {
-  String currentScene; //Can be Main Menu, Store, Cauldron Room, Basement
+  String currentScene; //Can be MainMenu, Store, Cauldron Room, Basement
   PImage background; //Same names as the scene's name
   public void ChangeScene(String sceneName)
   {

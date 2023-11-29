@@ -1,5 +1,6 @@
+import processing.sound.*;
 //Interactables
-ArrayList<Arrow> arrows = new ArrayList<Arrow>();
+ArrayList<SceneChanger> arrowsNButtons = new ArrayList<SceneChanger>();
 ArrayList<Text> textBoxes = new ArrayList<Text>();
 ArrayList<Item> basementItems = new ArrayList<Item>();
 ItemPanel[] potionMakerPanels = new ItemPanel[3];
@@ -7,6 +8,8 @@ Item[] cauldronItems = new Item[3];
 Item[] inventoryItems = new Item[4];
 ItemPanel[] inventoryPanels = new ItemPanel[4]; //The item count and the panel count should be equal
 
+SoundFile music;
+SoundFile cauldronAmbience;
 BookManager bookManager = new BookManager();
 SceneManager sceneManager;
 PotionMakerButton brewButton;
@@ -43,8 +46,10 @@ void setup()
   cursor = new Cursor(new PVector(mouseX, mouseY), "Cursor");
   sceneManager = new SceneManager();
   sceneManager.ChangeScene("Main Menu");
-  spawnPotionMakerUI();
-  bookManager.SetupBook();
+  spawnPotionMakerUI();  
+  cauldronAmbience = new SoundFile(this, "cauldronAmbience.wav");
+  music = new SoundFile(this, "music.wav");
+  //music.loop(); //commented because I listen to music while working, don't forget to turn on when testing
 }
 void draw()
 {
@@ -53,7 +58,7 @@ void draw()
   drawInteractables();
 }
 void drawInteractables()
-{
+{   
   if (inventoryUIActive)
   {
     image(inventoryBackground, width / 2 - 55, height - 130);
@@ -103,9 +108,9 @@ void drawInteractables()
   {
     text(cauldron.itemsHeld, width - 110, 500);
   }    
-  for (int i = arrows.size() - 1; i >= 0; i--)
+  for (int i = arrowsNButtons.size() - 1; i >= 0; i--)
   {
-    arrows.get(i).update();
+    arrowsNButtons.get(i).update();
   }
   for (int i = textBoxes.size() - 1; i >= 0; i--)
   {
@@ -129,30 +134,35 @@ void drawInteractables()
 void spawnInteractables()
 {
   shapeMode(CENTER);
-  arrows.clear();
+  arrowsNButtons.clear();
   textBoxes.clear();
   basementItems.clear();
   potionMakerUIActive = false;
+  if (cauldronAmbience != null)
+  {
+    cauldronAmbience.stop();
+  }  
   if (sceneManager.currentScene == "Main Menu")
   {
-    textBoxes.add(new Text(new PVector(200, 250), 30, "Start Game", true));
-    textBoxes.add(new Text(new PVector(200, 350), 30, "Quit Game", true));
+    arrowsNButtons.add(new SceneChanger(new PVector(250, height / 2), "Play", "Play"));
+    arrowsNButtons.add(new SceneChanger(new PVector(250, height / 2 + 110), "Quit", "Quit"));
   } else if (sceneManager.currentScene == "Store")
   {
-    arrows.add(new Arrow(new PVector(-20, height / 2), "arrowLeft", "Basement"));
-    arrows.add(new Arrow(new PVector(width - 80, height / 2), "arrowRight", "Cauldron Room"));
+    arrowsNButtons.add(new SceneChanger(new PVector(-20, height / 2), "arrowLeft", "Basement"));
+    arrowsNButtons.add(new SceneChanger(new PVector(width - 80, height / 2), "arrowRight", "Cauldron Room"));
   } else if (sceneManager.currentScene == "Basement")
   {
-    arrows.add(new Arrow(new PVector(140, height / 3), "arrowUp", "Cauldron Room"));
-    arrows.add(new Arrow(new PVector(width - 80, height / 2), "arrowRight", "Store"));
+    arrowsNButtons.add(new SceneChanger(new PVector(140, height / 3), "arrowUp", "Cauldron Room"));
+    arrowsNButtons.add(new SceneChanger(new PVector(width - 80, height / 2), "arrowRight", "Store"));
     basementItems.add(new Item(new PVector(650, 50), "Crimson Fern", "Ingredient"));
     basementItems.add(new Item(new PVector(750, 50), "Bat Ears", "Ingredient"));
     basementItems.add(new Item(new PVector(850, 50), "Devil Shroom", "Ingredient"));
     basementItems.add(new Item(new PVector(950, 50), "Fairy Wings", "Ingredient"));
   } else if (sceneManager.currentScene == "Cauldron Room")
   {
-    arrows.add(new Arrow(new PVector(-20, height / 2), "arrowLeft", "Store"));
-    arrows.add(new Arrow(new PVector(width - 80, height / 2), "arrowRight", "Basement")); 
+    arrowsNButtons.add(new SceneChanger(new PVector(-20, height / 2), "arrowLeft", "Store"));
+    arrowsNButtons.add(new SceneChanger(new PVector(width - 80, height / 2), "arrowRight", "Basement")); 
+    cauldronAmbience.loop();
   }
 }
 void mousePressed()

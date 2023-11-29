@@ -75,7 +75,10 @@ class BookManager
 
   public void update()
   {
-    image(bookButton, x[0], y[0], buttonWidth[0], buttonHeight[0]);
+    if (sceneManager.currentScene != "Main Menu")
+    {
+      image(bookButton, x[0], y[0], buttonWidth[0], buttonHeight[0]);
+    }    
     
     if (isBookOpen == true)
     {

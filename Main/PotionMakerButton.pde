@@ -77,7 +77,7 @@ class PotionMakerButton
           cauldronItems[1] = null;
           cauldron.itemsHeld = 0;
           Item potion = new Item(new PVector(resultPanel.position.x, resultPanel.position.y), potionName, "Potion");
-          resultPanel.addItem(new PVector(resultPanel.position.x, resultPanel.position.y), potion);
+          resultPanel.addItem(new PVector(resultPanel.position.x + 10, resultPanel.position.y + 10), potion);
         }
       }
     }
