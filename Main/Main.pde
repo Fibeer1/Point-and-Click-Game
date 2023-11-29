@@ -10,6 +10,7 @@ ItemPanel[] inventoryPanels = new ItemPanel[4]; //The item count and the panel c
 
 SoundFile music;
 SoundFile cauldronAmbience;
+SoundFile gardenAmbience;
 BookManager bookManager = new BookManager();
 SceneManager sceneManager;
 PotionMakerButton brewButton;
@@ -48,6 +49,7 @@ void setup()
   sceneManager.ChangeScene("Main Menu");
   spawnPotionMakerUI();  
   cauldronAmbience = new SoundFile(this, "cauldronAmbience.wav");
+  gardenAmbience = new SoundFile(this, "gardenAmbience.wav");
   music = new SoundFile(this, "music.wav");
   //music.loop(); //commented because I listen to music while working, don't forget to turn on when testing
 }
@@ -142,6 +144,10 @@ void spawnInteractables()
   {
     cauldronAmbience.stop();
   }  
+  if (gardenAmbience != null)
+  {
+    gardenAmbience.stop();
+  }
   if (sceneManager.currentScene == "Main Menu")
   {
     arrowsNButtons.add(new SceneChanger(new PVector(250, height / 2), "Play", "Play"));
@@ -158,6 +164,7 @@ void spawnInteractables()
     basementItems.add(new Item(new PVector(750, 50), "Bat Ears", "Ingredient"));
     basementItems.add(new Item(new PVector(850, 50), "Devil Shroom", "Ingredient"));
     basementItems.add(new Item(new PVector(950, 50), "Fairy Wings", "Ingredient"));
+    gardenAmbience.loop();
   } else if (sceneManager.currentScene == "Cauldron Room")
   {
     arrowsNButtons.add(new SceneChanger(new PVector(-20, height / 2), "arrowLeft", "Store"));
